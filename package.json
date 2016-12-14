@@ -1,0 +1,23 @@
+{
+  "name": "dotenv-utils",
+  "version": "0.1.0",
+  "description": "Utilities for processing env vars",
+  "main": "index.js",
+  "scripts": {
+    "test": "ava"
+  },
+  "keywords": [
+    "dotenv",
+    "schema",
+    "string",
+    "cast",
+    "convert",
+    "type",
+    "types"
+  ],
+  "author": "Artur Muller <me@arturmuller.com> (http://arturmuller.com)",
+  "license": "MIT",
+  "devDependencies": {
+    "ava": "^0.17.0"
+  }
+}
