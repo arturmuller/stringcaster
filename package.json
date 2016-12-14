@@ -1,8 +1,12 @@
 {
   "name": "dotenv-utils",
   "version": "0.1.0",
-  "description": "Utilities for processing env vars",
+  "description": "Covert env var strings to other types",
   "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/arturmuller/dotenv-utils.git"
+  },
   "scripts": {
     "test": "ava"
   },
