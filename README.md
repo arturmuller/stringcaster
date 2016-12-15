@@ -2,17 +2,20 @@
 
 [![npm](https://img.shields.io/npm/v/dotenv-utils.svg)](https://www.npmjs.com/package/dotenv-utils)
 
-> Covert env var strings to other types
+> Covert env var strings to booleans, numbers, arrays, and objects.
 
-Alright, so you're using [`dotenv`](https://www.npmjs.com/package/dotenv). Everything is smooth sailing until you need to convert some of the strings it outputs into a different type.
+**Context:** Environment variables are a great way to separate config from code. Tools like [`dotenv`](https://www.npmjs.com/package/dotenv) make this almost perfect but...
 
-It probably starts with something like `process.env.MINIFY === "true"` but as your app grows, other "types" might crop up. Ad-hoc solutions slowly become hard to read and maintain. If you have many apps, you might end up with many — subtly different — ways in which you convert vars into something that can be safely consumed.
+**The problem:** Environment variables are always strings. If you set a variable `MINIFY=false` and try to check it using `if (process.env.MINIFY) { ...some logic }`, then "...some logic" will actually be executed as non-empty strings are truthy.
 
-This is where `dotenv-utils` comes into play. :tada:
+The quick solution is to write `process.env.MINIFY === "true"` instead, but as you get more vars and more var "types", these ad-hoc solutions become tedious, unclear, and error-prone.
 
-You can use individual conversion functions (`boolean`, `number`, `array`, `object`) to convert vars one at a time, or create a new, squeaky clean config object based on a schema using the `conform` helper.
+**The solution**: `dotenv-utils` provides several helpers to make sure you never have to worry about this again.
 
-The output of `dotenv-utils` conversion functions is always of the specified type. That way, you can safely call whichever methods that type has without worrying about getting that `Uncaught Type Error: undefined is not a function` fun.
+- [`boolean`](#boolean), [`number`](#number), [`array`](#array), [`object`](#object) convert vars one at a time.
+- [`conform`](#conform) creates a new config object with the correct types based on a schema.
+
+Conversion functions always return the right type. That way, you can safely call methods without worrying about getting that `Uncaught Type Error: undefined is not a function` fun.
 
 ## Install
 
@@ -23,6 +26,8 @@ npm install --save dotenv-utils
 # ...or using `yarn`
 yarn add dotenv-utils
 ```
+
+Tested on Node.js v6.9.2, likely runs on earlier versions too.
 
 ## API
 
@@ -55,7 +60,7 @@ number(undefined) // 0
 
 ### `string`
 
-Trims the supplied string. If provided a falsy value, returns `""`. This is mainly useful when used in conjunction with the `conform` helper.
+Trims the supplied string. If provided a falsy value, returns `""`. This is mainly useful when used in conjunction with the [`conform`](#conform) helper.
 
 ```js
 const {string} = require("dotenv-utils")
@@ -88,7 +93,7 @@ Converts a string of comma-separated tuples (`"foo: bar, baz: quux"`) to an obje
 const {object} = require("dotenv-utils")
 
 object("foo: bar, baz: quux") // {foo: "bar", baz: "quux"}
-object("foo:    bar   , baz:quux") // {foo: "bar", baz: "quux"}
+object("foo:    bar   ,baz:quux") // {foo: "bar", baz: "quux"}
 object(":,foo:") // {foo: ""}
 object("::,") // {}
 object("") // {}
@@ -97,20 +102,20 @@ object(undefined) // {}
 
 ### `conform`
 
-Provided a schema, `conform` picks keys from the supplied env object and converts them using the supplied functions.
+Provided a schema, `conform` picks keys from an env object and converts them using the supplied functions.
 
-Keys which are present in the `schema`, but not in you `process.env` will be present in the final object, having a value based on calling the conversion function with `undefined`.
+Keys which are present in the `schema`, but not in the supplied `env` object *will* be present in the final object, having a value/type based on calling the conversion function with `undefined`.
 
-Given this `.env`:
+Given these env vars:
 ```
 DEFAULT_LOCALE=en-GB
 SUPPORTED_LOCALES=en-GB,cs-CZ,pl-PL
 ```
 
-You can do this in your `config.js`:
+You can do this:
 ```js
-// Load your env vars
-require('dotenv').config();
+// Make sure you have loaded the env vars somehow,
+// either inline or using `dotenv`...
 
 const {conform, boolean, array, string} = require("dotenv-utils")
 
