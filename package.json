@@ -1,6 +1,6 @@
 {
   "name": "dotenv-utils",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "description": "Covert env var strings to other types",
   "main": "index.js",
   "repository": {
