@@ -1,5 +1,5 @@
 const boolean = (s) => s
-  ? s.trim() === "true"
+  ? s.toLowerCase().trim() === "true"
   : false
 
 const string = (s) => s

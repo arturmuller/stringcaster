@@ -3,6 +3,7 @@ const {boolean, number, string, array, object, conform} = require("./index")
 
 test("boolean", (t) => {
   t.true(boolean("true"))
+  t.true(boolean("TRUE"))
   t.true(boolean("  true   "))
   t.false(boolean("false"))
   t.false(boolean(""))

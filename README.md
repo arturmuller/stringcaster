@@ -33,12 +33,13 @@ Tested on Node.js v6.9.2, likely runs on earlier versions too.
 
 ### `boolean`
 
-Converts a string representation of a boolean to an actual boolean. Note that only `"true"` will evaluate to `true` — everything else is `false`.
+Converts a string representation (case-insensitive) of a boolean to an actual boolean.
 
 ```js
 const {boolean} = require("dotenv-utils")
 
 boolean("true") // true
+boolean("TRUE") // true
 boolean("false") // false
 boolean("foo") // false
 boolean("") // false
