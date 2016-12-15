@@ -140,6 +140,11 @@ const config = conform(process.env, schema)
 module.exports = config
 ```
 
+## Other Tools
+
+- https://www.npmjs.com/package/getenv — Slightly different concept, very good solution.
+- https://github.com/niftylettuce/dotenv-parse-variables — Very similar, mutates `process.env`.
+
 ## License
 
 MIT
