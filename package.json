@@ -2,12 +2,15 @@
   "name": "dotenv-utils",
   "version": "0.1.3",
   "description": "Covert env var strings to other types",
-  "main": "index.js",
+  "main": "dist/index.js",
   "repository": {
     "type": "git",
     "url": "https://github.com/arturmuller/dotenv-utils.git"
   },
   "scripts": {
+    "clean": "rimraf dist",
+    "build": "babel index.js -d dist --ignore *.test.js",
+    "prepublish": "npm run clean && npm run build",
     "test": "ava"
   },
   "keywords": [
@@ -22,6 +25,10 @@
   "author": "Artur Muller <me@arturmuller.com> (http://arturmuller.com)",
   "license": "MIT",
   "devDependencies": {
-    "ava": "^0.17.0"
+    "ava": "^0.17.0",
+    "babel-cli": "^6.23.0",
+    "babel-core": "^6.23.1",
+    "babel-preset-latest": "^6.22.0",
+    "rimraf": "^2.6.1"
   }
 }
