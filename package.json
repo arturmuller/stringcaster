@@ -11,7 +11,7 @@
     "clean": "rimraf dist",
     "build": "babel index.js -d dist --ignore *.test.js",
     "prepublish": "npm run clean && npm run build",
-    "test": "ava"
+    "test": "jest"
   },
   "keywords": [
     "dotenv",
@@ -25,10 +25,12 @@
   "author": "Artur Muller <me@arturmuller.com> (http://arturmuller.com)",
   "license": "MIT",
   "devDependencies": {
-    "ava": "^0.17.0",
     "babel-cli": "^6.23.0",
     "babel-core": "^6.23.1",
     "babel-preset-latest": "^6.22.0",
+    "eslint": "^3.19.0",
+    "eslint-config-lusk": "^1.0.3",
+    "jest": "^20.0.4",
     "rimraf": "^2.6.1"
   }
 }
