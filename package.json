@@ -1,6 +1,6 @@
 {
   "name": "stringcaster",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "Covert strings to other types",
   "main": "dist/index.js",
   "repository": {
@@ -13,7 +13,14 @@
     "prepublishOnly": "npm run clean && npm run build",
     "test": "jest"
   },
-  "keywords": ["schema", "string", "cast", "convert", "type", "types"],
+  "keywords": [
+    "schema",
+    "string",
+    "cast",
+    "convert",
+    "type",
+    "types"
+  ],
   "author": "Artur Muller <me@arturmuller.com> (http://arturmuller.com)",
   "license": "MIT",
   "devDependencies": {
