@@ -10,30 +10,30 @@ const checkDefaultValueType = (type, defaultValue, test) => {
 
 // boolean
 
-const booleanWithDefault = (defaultValue = false) => {
+const toBooleanWithDefault = (defaultValue = false) => {
   checkDefaultValueType("boolean", defaultValue);
 
   return string =>
     string ? string.toLowerCase().trim() === "true" : defaultValue;
 };
 
-const boolean = booleanWithDefault();
-boolean.withDefault = booleanWithDefault;
+const toBoolean = toBooleanWithDefault();
+toBoolean.withDefault = toBooleanWithDefault;
 
 // string
 
-const stringWithDefault = (defaultValue = "") => {
+const toStringWithDefault = (defaultValue = "") => {
   checkDefaultValueType("string", defaultValue);
 
   return string => string ? string.trim() : defaultValue;
 };
 
-const string = stringWithDefault();
-string.withDefault = stringWithDefault;
+const toString = toStringWithDefault();
+toString.withDefault = toStringWithDefault;
 
 // number
 
-const numberWithDefault = (defaultValue = 0) => {
+const toNumberWithDefault = (defaultValue = 0) => {
   checkDefaultValueType("number", defaultValue);
   return string => {
     if (!string) return defaultValue;
@@ -42,10 +42,10 @@ const numberWithDefault = (defaultValue = 0) => {
   };
 };
 
-const number = numberWithDefault();
-number.withDefault = numberWithDefault;
+const toNumber = toNumberWithDefault();
+toNumber.withDefault = toNumberWithDefault;
 
-const arrayWithDefault = (defaultValue = []) => {
+const toArrayWithDefault = (defaultValue = []) => {
   checkDefaultValueType("array", defaultValue, v => Array.isArray(v));
 
   return string =>
@@ -54,10 +54,10 @@ const arrayWithDefault = (defaultValue = []) => {
       : defaultValue;
 };
 
-const array = arrayWithDefault();
-array.withDefault = arrayWithDefault;
+const toArray = toArrayWithDefault();
+toArray.withDefault = toArrayWithDefault;
 
-const objectWithDefault = (defaultValue = {}) => {
+const toObjectWithDefault = (defaultValue = {}) => {
   checkDefaultValueType("object", defaultValue);
 
   return string =>
@@ -70,8 +70,8 @@ const objectWithDefault = (defaultValue = {}) => {
       : defaultValue;
 };
 
-const object = objectWithDefault();
-object.withDefault = objectWithDefault;
+const toObject = toObjectWithDefault();
+toObject.withDefault = toObjectWithDefault;
 
 const conform = (env, schema) => {
   return Object.keys(schema).reduce((acc, key) => {
@@ -91,4 +91,4 @@ const conform = (env, schema) => {
   }, {});
 };
 
-module.exports = { boolean, string, number, array, object, conform };
+module.exports = { toBoolean, toString, toNumber, toArray, toObject, conform };

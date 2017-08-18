@@ -1,103 +1,112 @@
 /* globals test expect */
 
-const { boolean, number, string, array, object, conform } = require("./index");
+const {
+  toBoolean,
+  toString,
+  toNumber,
+  toArray,
+  toObject,
+  conform,
+} = require("./index");
 
-test("boolean", () => {
+test("toBoolean", () => {
   // Values should be correctly cast
-  expect(boolean("true")).toBe(true);
-  expect(boolean("TRUE")).toBe(true);
-  expect(boolean("  true   ")).toBe(true);
-  expect(boolean("false")).toBe(false);
-  expect(boolean("xyz")).toBe(false);
-  expect(boolean("")).toBe(false);
-  expect(boolean(undefined)).toBe(false);
+  expect(toBoolean("true")).toBe(true);
+  expect(toBoolean("TRUE")).toBe(true);
+  expect(toBoolean("  true   ")).toBe(true);
+  expect(toBoolean("false")).toBe(false);
+  expect(toBoolean("xyz")).toBe(false);
+  expect(toBoolean("")).toBe(false);
+  expect(toBoolean(undefined)).toBe(false);
 });
 
-test("boolean.withDefault", () => {
+test("toBoolean.withDefault", () => {
   // Default should be respected if no value provided
-  expect(boolean.withDefault(true)(undefined)).toBe(true);
+  expect(toBoolean.withDefault(true)(undefined)).toBe(true);
 
   // Default should not override provided value
-  expect(boolean.withDefault(true)("false")).toBe(false);
+  expect(toBoolean.withDefault(true)("false")).toBe(false);
 
   // Default value of wrong type should throw
-  expect(() => boolean.withDefault("not a boolean")).toThrow();
+  expect(() => toBoolean.withDefault("not a boolean")).toThrow();
 });
 
-test("number", () => {
-  expect(number("1")).toBe(1);
-  expect(number("0")).toBe(0);
-  expect(number("")).toBe(0);
-  expect(number("foobar")).toBe(0);
-  expect(number(undefined)).toBe(0);
+test("toNumber", () => {
+  expect(toNumber("1")).toBe(1);
+  expect(toNumber("0")).toBe(0);
+  expect(toNumber("")).toBe(0);
+  expect(toNumber("foobar")).toBe(0);
+  expect(toNumber(undefined)).toBe(0);
 });
 
-test("number.withDefault", () => {
+test("toNumber.withDefault", () => {
   // Default should be respected if no value provided
-  expect(number.withDefault(9000)(undefined)).toBe(9000);
+  expect(toNumber.withDefault(9000)(undefined)).toBe(9000);
 
   // Default should not override provided value
-  expect(number.withDefault(9000)(1)).toBe(1);
+  expect(toNumber.withDefault(9000)(1)).toBe(1);
 
   // Default value of wrong type should throw
-  expect(() => number.withDefault("not a number")).toThrow();
+  expect(() => toNumber.withDefault("not a number")).toThrow();
 });
 
-test("string", () => {
-  expect(string("foo")).toBe("foo");
-  expect(string("   bar   ")).toBe("bar");
-  expect(string("")).toBe("");
-  expect(string(undefined)).toBe("");
+test("toString", () => {
+  expect(toString("foo")).toBe("foo");
+  expect(toString("   bar   ")).toBe("bar");
+  expect(toString("")).toBe("");
+  expect(toString(undefined)).toBe("");
 });
 
-test("string.withDefault", () => {
+test("toString.withDefault", () => {
   // Default should be respected if no value provided
-  expect(string.withDefault("beep")(undefined)).toBe("beep");
+  expect(toString.withDefault("beep")(undefined)).toBe("beep");
 
   // Default should not override provided value
-  expect(string.withDefault("beep")("BANG!")).toBe("BANG!");
+  expect(toString.withDefault("beep")("BANG!")).toBe("BANG!");
 
   // Default value of wrong type should throw
-  expect(() => string.withDefault(0)).toThrow();
+  expect(() => toString.withDefault(0)).toThrow();
 });
 
-test("array", () => {
-  expect(array("foo, bar, baz")).toEqual(["foo", "bar", "baz"]);
-  expect(array("foo,   bar,baz")).toEqual(["foo", "bar", "baz"]);
-  expect(array(",,")).toEqual([]);
-  expect(array("")).toEqual([]);
-  expect(array(undefined)).toEqual([]);
+test("toArray", () => {
+  expect(toArray("foo, bar, baz")).toEqual(["foo", "bar", "baz"]);
+  expect(toArray("foo,   bar,baz")).toEqual(["foo", "bar", "baz"]);
+  expect(toArray(",,")).toEqual([]);
+  expect(toArray("")).toEqual([]);
+  expect(toArray(undefined)).toEqual([]);
 });
 
-test("array.withDefault", () => {
+test("toArray.withDefault", () => {
   // Default should be respected if no value provided
-  expect(array.withDefault(["a", "b"])(undefined)).toEqual(["a", "b"]);
+  expect(toArray.withDefault(["a", "b"])(undefined)).toEqual(["a", "b"]);
 
   // Default should not override provided value
-  expect(array.withDefault(["a", "b"])("c, d")).toEqual(["c", "d"]);
+  expect(toArray.withDefault(["a", "b"])("c, d")).toEqual(["c", "d"]);
 
   // Default value of wrong type should throw
-  expect(() => array.withDefault("not array")).toThrow();
+  expect(() => toArray.withDefault("not array")).toThrow();
 });
 
-test("object", () => {
-  expect(object("a: x, b: y")).toEqual({ a: "x", b: "y" });
-  expect(object("a:    x   , b:y")).toEqual({ a: "x", b: "y" });
-  expect(object(":,foo:")).toEqual({ foo: "" });
-  expect(object("::,")).toEqual({});
-  expect(object("")).toEqual({});
-  expect(object(undefined)).toEqual({});
+test("toObject", () => {
+  expect(toObject("a: x, b: y")).toEqual({ a: "x", b: "y" });
+  expect(toObject("a:    x   , b:y")).toEqual({ a: "x", b: "y" });
+  expect(toObject(":,foo:")).toEqual({ foo: "" });
+  expect(toObject("::,")).toEqual({});
+  expect(toObject("")).toEqual({});
+  expect(toObject(undefined)).toEqual({});
 });
 
-test("object.withDefault", () => {
+test("toObject.withDefault", () => {
   // Default should be respected if no value provided
-  expect(object.withDefault({ foo: "bar" })(undefined)).toEqual({ foo: "bar" });
+  expect(toObject.withDefault({ foo: "bar" })(undefined)).toEqual({
+    foo: "bar",
+  });
 
   // Default should not override provided value
-  expect(object.withDefault({ foo: "bar" })("a: b")).toEqual({ a: "b" });
+  expect(toObject.withDefault({ foo: "bar" })("a: b")).toEqual({ a: "b" });
 
   // Default value of wrong type should throw
-  expect(() => object.withDefault("not object")).toThrow();
+  expect(() => toObject.withDefault("not object")).toThrow();
 });
 
 test("conform", () => {
@@ -112,16 +121,16 @@ test("conform", () => {
   // Env object values should be cast according to schema
 
   const schema = {
-    STRING: string,
-    BOOLEAN: boolean,
-    NUMBER: number,
-    ARRAY: array,
-    OBJECT: object,
-    MISSING_STRING: string.withDefault("string"),
-    MISSING_BOOLEAN: boolean.withDefault(true),
-    MISSING_NUMBER: number.withDefault(9000),
-    MISSING_ARRAY: array.withDefault(["foo", "bar"]),
-    MISSING_OBJECT: object.withDefault({ some: "object" }),
+    STRING: toString,
+    BOOLEAN: toBoolean,
+    NUMBER: toNumber,
+    ARRAY: toArray,
+    OBJECT: toObject,
+    MISSING_STRING: toString.withDefault("string"),
+    MISSING_BOOLEAN: toBoolean.withDefault(true),
+    MISSING_NUMBER: toNumber.withDefault(9000),
+    MISSING_ARRAY: toArray.withDefault(["foo", "bar"]),
+    MISSING_OBJECT: toObject.withDefault({ some: "object" }),
   };
 
   expect(conform(env, schema)).toEqual({

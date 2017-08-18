@@ -1,27 +1,19 @@
 {
-  "name": "dotenv-utils",
+  "name": "stringcaster",
   "version": "0.2.0",
-  "description": "Covert env var strings to other types",
+  "description": "Covert strings to other types",
   "main": "dist/index.js",
   "repository": {
     "type": "git",
-    "url": "https://github.com/arturmuller/dotenv-utils.git"
+    "url": "https://github.com/arturmuller/stringcaster.git"
   },
   "scripts": {
     "clean": "rimraf dist",
     "build": "babel index.js -d dist --ignore *.test.js",
-    "prepublish": "npm run clean && npm run build",
+    "prepublishOnly": "npm run clean && npm run build",
     "test": "jest"
   },
-  "keywords": [
-    "dotenv",
-    "schema",
-    "string",
-    "cast",
-    "convert",
-    "type",
-    "types"
-  ],
+  "keywords": ["schema", "string", "cast", "convert", "type", "types"],
   "author": "Artur Muller <me@arturmuller.com> (http://arturmuller.com)",
   "license": "MIT",
   "devDependencies": {
