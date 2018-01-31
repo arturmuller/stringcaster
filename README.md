@@ -1,21 +1,20 @@
-# stringcaster
+# Stringcaster
 
 [![npm](https://img.shields.io/npm/v/stringcaster.svg)](https://www.npmjs.com/package/stringcaster)
 
-> Covert env strings to booleans, numbers, arrays, and objects.
+Stringcaster is a focused, light-weight, tested, zero-dependency lib that lets you cast strings into any kind of JavaScript primitive type.
 
-In JavaScript land, there are many places in which you can only be given strings, but what is need is all kinds of types. Environment variables and command line arguments are two common cases.
 
-For example, if you set an env variable `MINIFY=false` and try to check it using `if (process.env.MINIFY) { ...some logic }`, then "...some logic" will actually be executed as non-empty strings are truthy.
+## The Problem
 
-The quick solution is to write checks like `process.env.MINIFY === "true"` everywhere, but as you get more vars and more var "types", these ad-hoc solutions become tedious, unclear, and error-prone.
+There are many places in JavaScript land where you'll only ever be given strings as input: environment variables, command-line arguments, cookies, and many others.
 
-`stringcaster` provides several helpers to make sure you never have to worry about this again.
+Imagine that you have a script that enables a feature based on an env variable. A correct-looking check like this: `if (process.env.ENABLE_BUBBLES) { ...some logic }` will actually not fail when the script is run with `ENABLE_BUBBLES=false`, because env vars are strings and non-empty strings in JavaScript are truthy. Ugh.
 
-- [`toBoolean`](#toBoolean), [`toNumber`](#toNumber), [`toArray`](#toArray), [`toObject`](#toObject) convert vars one at a time.
-- [`conform`](#conform) takes an object and applies transformations based on a provided schema.
+The quick solution is to write more careful checks like so `process.env.ENABLE_BUBBLES === "true"`, but as you get more vars, more var "types", and a bigger team, these ad-hoc solutions become tedious, unclear, and error-prone.
 
-Conversion functions always return the right type. That way, you can safely call methods without worrying about getting that `Uncaught Type Error: undefined is not a function` fun.
+Stringcaster solves this by providing a clean API for casting strings to any kind of JavaScript primitive type without hassle. It works. It's tested. No more bubbles!
+
 
 ## Install
 
@@ -29,21 +28,39 @@ yarn add stringcaster
 
 Tested on Node.js v6.9.2, likely runs on earlier versions too.
 
+
 ## API
+
+The core conversion functions in Stringcaster are:
+
+- [`toBoolean`](#toBoolean)
+- [`toNumber`](#toNumber)
+- [`toString`](#toString)
+- [`toArray`](#toArray)
+- [`toObject`](#toObject)
+
+All of these also contain a `withDefault` method that can be used to create a new conversion function with a custom fallback value.
+
+Lastly, there is also the [`conform`](#conform) utility function, which takes an object and applies transformations based on a provided schema. Very useful for converting `process.env` variables!
+
+Conversion functions **always return the right type**. That way, you can safely call methods without worrying about getting that _undefined-is-not-a-function_ fun.
 
 ### `toBoolean`
 
 Converts a string representation (case-insensitive) of a boolean to an actual boolean.
 
 ```js
-const { toBoolean } = require("stringcaster")
+const cast = require("stringcaster")
 
-toBoolean("true") // true
-toBoolean("TRUE") // true
-toBoolean("false") // false
-toBoolean("foo") // false
-toBoolean("") // false
-toBoolean(undefined) // false
+cast.toBoolean("true") // true
+cast.toBoolean("TRUE") // true
+cast.toBoolean("false") // false
+cast.toBoolean("foo") // false
+cast.toBoolean("") // false
+cast.toBoolean(undefined) // false
+
+const castToBooleanDefaultTrue = cast.toBoolean.withDefault(true)
+toBooleanDefaultTrue(undefined) // true
 ```
 
 ### `toNumber`
@@ -51,12 +68,15 @@ toBoolean(undefined) // false
 Converts a string representation of a number to an actual number. Basically like `Number(x)`, but will return a `0` instead of `NaN` when string cannot be converted to a number.
 
 ```js
-const { toNumber } = require("stringcaster")
+const cast = require("stringcaster")
 
-toNumber("123") // 123
-toNumber("  123   ") // 123
-toNumber("foo") // 0
-toNumber(undefined) // 0
+cast.toNumber("123") // 123
+cast.toNumber("  123   ") // 123
+cast.toNumber("foo") // 0
+cast.toNumber(undefined) // 0
+
+const castToNumberDefault42 = cast.toNumber.withDefault(42)
+toBooleanDefaultTrue(undefined) // 42
 ```
 
 ### `toString`
@@ -64,26 +84,32 @@ toNumber(undefined) // 0
 Trims the supplied string. If provided a falsy value, returns `""`. This is mainly useful when used in conjunction with the [`conform`](#conform) helper.
 
 ```js
-const { toString } = require("stringcaster")
+const cast = require("stringcaster")
 
-toString("foo") // foo
-toString("  foo   ") // "foo"
-toString("") // ""
-toString(undefined) // ""
+cast.toString("foo") // foo
+cast.toString("  foo   ") // "foo"
+cast.toString("") // ""
+cast.toString(undefined) // ""
+
+const castToStringDefaultFoo = cast.toString.withDefault("foo")
+castToStringDefaultFoo(undefined) // "foo"
 ```
 
 ### `toArray`
 
-Converts a string of comma-separated values (`"foo, bar, baz"`) to an array. Any extra whitespace will be trimmed and empty strings discarded.
+Converts a string of comma-separated values (`"foo, bar, baz"`) to an array of strings. Any extra whitespace will be trimmed and empty strings discarded.
 
 ```js
-const { toArray } = require("stringcaster")
+const cast = require("stringcaster")
 
-toArray("foo, bar, baz") // ["foo", "bar", "baz"]
-toArray("foo,   bar,    baz") // ["foo", "bar", "baz"]
-toArray(",,,") // []
-toArray("") // []
-toArray(undefined) // []
+cast.toArray("foo, bar, baz") // ["foo", "bar", "baz"]
+cast.toArray("foo,   bar,    baz") // ["foo", "bar", "baz"]
+cast.toArray(",,,") // []
+cast.toArray("") // []
+cast.toArray(undefined) // []
+
+const castToArrayDefaultFooBar = cast.toArray.withDefault(["foo", "bar"])
+castToArrayDefaultFooBar(undefined) // ["foo", "bar"]
 ```
 
 ### `toObject`
@@ -91,40 +117,39 @@ toArray(undefined) // []
 Converts a string of comma-separated tuples (`"foo: bar, baz: quux"`) to an object. Any extra whitespace from either key or value will be discarded, as are tuples with falsy keys.
 
 ```js
-const { toObject } = require("stringcaster")
+const cast = require("stringcaster")
 
-toObject("foo: bar, baz: quux") // {foo: "bar", baz: "quux"}
-toObject("foo:    bar   ,baz:quux") // {foo: "bar", baz: "quux"}
-toObject(":,foo:") // {foo: ""}
-toObject("::,") // {}
-toObject("") // {}
-toObject(undefined) // {}
+cast.toObject("foo: bar, baz: quux") // {foo: "bar", baz: "quux"}
+cast.toObject("foo:    bar   ,baz:quux") // {foo: "bar", baz: "quux"}
+cast.toObject(":,foo:") // {foo: ""}
+cast.toObject("::,") // {}
+cast.toObject("") // {}
+cast.toObject(undefined) // {}
+
+const castToObjectDefaultFooBar = cast.toObject.withDefault({ foo: "bar" })
+castToObjectDefaultFooBar(undefined) // { foo: "bar" }
 ```
 
 ### `conform`
 
-Provided a schema, `conform` picks keys from an env object and converts them using the supplied functions.
+Provided a schema, `conform` picks keys from an object and converts them using the supplied functions.
 
-Keys which are present in the `schema`, but not in the supplied `env` object *will* be present in the final object, having a value/type based on calling the conversion function with `undefined`.
+Keys which are present in the `schema`, but not in the supplied object *will* be present in the final object, having a value/type based on calling the conversion function with `undefined`.
 
-For example, given these env vars:
-```
-DEFAULT_LOCALE=en-GB
-SUPPORTED_LOCALES=en-GB,cs-CZ,pl-PL
-```
+For example, imagine this script:
 
-You can do this:
 ```js
-// Make sure you have loaded the env vars somehow,
-// either inline or using `dotenv`...
+// Presume that the following env vars have been set:
+// MINIFY=false
+// SUPPORTED_LOCALES=en-GB,cs-CZ,pl-PL
 
-const { conform, toBoolean, toArray, toString } = require("stringcaster")
+const cast = require("stringcaster")
 
 // Specify a schema using the conversion functions
 const schema = {
-  MINIFY: toBoolean,
-  DEFAULT_LOCALE: toString,
-  SUPPORTED_LOCALES: toArray,
+  MINIFY: cast.toBoolean,
+  DEFAULT_LOCALE: cast.toString.withDefault("en-GB"),
+  SUPPORTED_LOCALES: cast.toArray,
 }
 
 // Drop `process.env` into `conform`
