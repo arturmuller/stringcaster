@@ -1,4 +1,4 @@
-// utils
+// Utils
 
 const checkDefaultValueType = (type, defaultValue, test) => {
   const testDefaultValue = test || (dv => typeof dv === type);
@@ -8,7 +8,7 @@ const checkDefaultValueType = (type, defaultValue, test) => {
     throw new Error(`Invalid default value provided to "${type}.withDefault". Should be "${type}" but got "${typeof defaultValue}"`);
 };
 
-// boolean
+// Conversion functions
 
 const toBooleanWithDefault = (defaultValue = false) => {
   checkDefaultValueType("boolean", defaultValue);
@@ -17,21 +17,11 @@ const toBooleanWithDefault = (defaultValue = false) => {
     string ? string.toLowerCase().trim() === "true" : defaultValue;
 };
 
-const toBoolean = toBooleanWithDefault();
-toBoolean.withDefault = toBooleanWithDefault;
-
-// string
-
 const toStringWithDefault = (defaultValue = "") => {
   checkDefaultValueType("string", defaultValue);
 
   return string => string ? string.trim() : defaultValue;
 };
-
-const toString = toStringWithDefault();
-toString.withDefault = toStringWithDefault;
-
-// number
 
 const toNumberWithDefault = (defaultValue = 0) => {
   checkDefaultValueType("number", defaultValue);
@@ -42,9 +32,6 @@ const toNumberWithDefault = (defaultValue = 0) => {
   };
 };
 
-const toNumber = toNumberWithDefault();
-toNumber.withDefault = toNumberWithDefault;
-
 const toArrayWithDefault = (defaultValue = []) => {
   checkDefaultValueType("array", defaultValue, v => Array.isArray(v));
 
@@ -53,9 +40,6 @@ const toArrayWithDefault = (defaultValue = []) => {
       ? string.split(",").map(s => s.trim()).filter(Boolean)
       : defaultValue;
 };
-
-const toArray = toArrayWithDefault();
-toArray.withDefault = toArrayWithDefault;
 
 const toObjectWithDefault = (defaultValue = {}) => {
   checkDefaultValueType("object", defaultValue);
@@ -70,25 +54,36 @@ const toObjectWithDefault = (defaultValue = {}) => {
       : defaultValue;
 };
 
-const toObject = toObjectWithDefault();
-toObject.withDefault = toObjectWithDefault;
-
 const conform = (env, schema) => {
   return Object.keys(schema).reduce((acc, key) => {
     const transform = schema[key];
     const type = typeof transform;
 
     if (type !== "function") {
-      throw new Error(
-        "Invalid schema. Conversion functions should be provided in " +
-          `the schema object. Instead saw type "${type}" at the ` +
-          `"${key}" key.`
-      );
+      // prettier-ignore
+      throw new Error(`Invalid schema. Conversion functions should be provided in the schema object. Instead saw type "${type}" at the "${key}" key.`);
     }
 
     acc[key] = transform(env[key]);
     return acc;
   }, {});
 };
+
+// Exports
+
+const toBoolean = toBooleanWithDefault();
+toBoolean.withDefault = toBooleanWithDefault;
+
+const toString = toStringWithDefault();
+toString.withDefault = toStringWithDefault;
+
+const toNumber = toNumberWithDefault();
+toNumber.withDefault = toNumberWithDefault;
+
+const toArray = toArrayWithDefault();
+toArray.withDefault = toArrayWithDefault;
+
+const toObject = toObjectWithDefault();
+toObject.withDefault = toObjectWithDefault;
 
 module.exports = { toBoolean, toString, toNumber, toArray, toObject, conform };

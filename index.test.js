@@ -1,4 +1,4 @@
-/* globals test expect */
+/* eslint-env jest */
 
 const {
   toBoolean,
