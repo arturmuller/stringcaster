@@ -1,6 +1,6 @@
 {
   "name": "stringcaster",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "description": "Cast strings into any kind of JavaScript primitive type",
   "main": "dist/index.js",
   "repository": {
