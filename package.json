@@ -1,17 +1,17 @@
 {
   "name": "stringcaster",
   "version": "0.3.0",
-  "description": "Covert strings to other types",
+  "description": "Cast strings into any kind of JavaScript primitive type",
   "main": "dist/index.js",
   "repository": {
     "type": "git",
     "url": "https://github.com/arturmuller/stringcaster.git"
   },
   "scripts": {
+    "test": "jest",
     "clean": "rimraf dist",
     "build": "babel index.js -d dist --ignore *.test.js",
-    "prepublishOnly": "npm run clean && npm run build",
-    "test": "jest"
+    "prepublishOnly": "npm test && npm run clean && npm run build"
   },
   "keywords": [
     "schema",
